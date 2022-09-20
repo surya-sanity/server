@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 1,
     },
+    cartId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   });
 
   return CartItem;

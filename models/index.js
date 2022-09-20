@@ -5,9 +5,8 @@ const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
 
-  dialect: dbConfig.dialext,
-
-  operatorAliases: false,
+  dialect: dbConfig.dialect,
+  dialectOptions: dbConfig.dialectOptions,
 
   pool: {
     max: dbConfig.pool.max,
@@ -38,12 +37,6 @@ db.cartItems = require("./cartItemModel.js")(sequelize, DataTypes);
 db.wallets = require("./walletModel.js")(sequelize, DataTypes);
 db.userBooks = require("./userBookModel.js")(sequelize, DataTypes);
 db.transactions = require("./transactionModel.js")(sequelize, DataTypes);
-
-db.carts.hasMany(db.cartItems, { as: "items" });
-db.cartItems.belongsTo(db.carts, {
-  foreignKey: "cartId",
-  as: "cart",
-});
 
 db.sequelize.sync({ force: false }).then(() => {
   console.log("mysql resync done !!");

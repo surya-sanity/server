@@ -87,14 +87,22 @@ const clearCart = asyncHandler(async (req, res) => {
 const getCart = asyncHandler(async (req, res) => {
   const cart = await Cart.findOne({ where: { userId: req.user.id } });
 
-  return await Cart.findByPk(cart.id, { include: ["items"] })
-    .then((cart) => {
-      return res.status(200).send(cart);
-    })
-    .catch((err) => {
-      res.status(500);
-      throw new Error(" Error while finding cart: ", err);
-    });
+  if (!cart) {
+    res.status(400);
+    throw new Error("No cart for this user");
+  }
+
+  const cartItems = await CartItem.findAll({ where: { cartId: cart.id } });
+
+  const cartToSend = {
+    userId: cart.userId,
+    createdAt: cart.createdAt,
+    updatedAt: cart.updatedAt,
+    id: cart.id,
+    items: cartItems ? cartItems : [],
+  };
+
+  res.status(200).send(cartToSend);
 });
 
 const initCart = async (userId) => {
