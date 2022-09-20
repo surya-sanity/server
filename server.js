@@ -15,7 +15,7 @@ const transactionRouter = require("./routes/transactionRouter");
 const app = express();
 
 let corOptions = {
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "https://ebook-react.netlify.app/"],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
