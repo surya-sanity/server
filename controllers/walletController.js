@@ -53,7 +53,10 @@ const initWallet = async (userId) => {
   const walletExists = await Wallet.findOne({ where: { userId } });
 
   if (!walletExists) {
-    const walletCreated = await Wallet.create({ userId });
+    const walletCreated = await Wallet.create({
+      userId,
+      walletBalance: 6969,
+    });
 
     return walletCreated;
   }
