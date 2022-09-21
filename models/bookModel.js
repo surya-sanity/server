@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     published: {
       type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
     author: {
       type: DataTypes.STRING,

@@ -83,7 +83,7 @@ const deleteBook = asyncHandler(async (req, res) => {
 
   await Book.destroy({ where: { id: id } });
 
-  res.status(200).send(`Book deleted : ${id}`);
+  return res.status(200).send({ message: true });
 });
 
 const getBooksByTitle = asyncHandler(async (req, res) => {
