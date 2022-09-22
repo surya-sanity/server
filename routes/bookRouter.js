@@ -13,6 +13,10 @@ bookRouter.post("/addBook", adminProtect, bookController.addBook);
 
 bookRouter.put("/:id", adminProtect, bookController.updateBookById);
 
-bookRouter.delete("/:id", adminProtect, bookController.deleteBook);
+bookRouter.delete("/deleteOne/:id", adminProtect, bookController.deleteBook);
+
+bookRouter.post("/bulkAdd", adminProtect, bookController.createBulkBooks);
+
+bookRouter.delete("/deleteAll", adminProtect, bookController.deleteAllBooks);
 
 module.exports = bookRouter;

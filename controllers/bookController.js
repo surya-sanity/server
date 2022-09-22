@@ -86,6 +86,7 @@ const deleteBook = asyncHandler(async (req, res) => {
   return res.status(200).send({ message: true });
 });
 
+//6. Get books by title, genre, author
 const getBooksByTitle = asyncHandler(async (req, res) => {
   const { term } = req.body;
 
@@ -119,6 +120,35 @@ const getBooksByTitle = asyncHandler(async (req, res) => {
   res.status(200).send(books);
 });
 
+//7. Create bulk books
+const createBulkBooks = asyncHandler(async (req, res) => {
+  const { books } = req.body;
+
+  if (books.length === 0) {
+    res.status(400);
+    throw new Error("books cannot be empty");
+  }
+
+  const createdBooks = await Book.bulkCreate(books, { returning: true });
+
+  res.status(200).send(createdBooks);
+});
+
+//7. Delete all books at once
+const deleteAllBooks = asyncHandler(async (req, res) => {
+  await Book.destroy({
+    where: {},
+    truncate: true,
+  })
+    .then(() => {
+      res.status(200).send({ message: "All books deleted successfully !" });
+    })
+    .catch((err) => {
+      res.status(400);
+      throw new Error(err);
+    });
+});
+
 module.exports = {
   addBook,
   getAllBooks,
@@ -126,4 +156,6 @@ module.exports = {
   getBookById,
   deleteBook,
   getBooksByTitle,
+  createBulkBooks,
+  deleteAllBooks,
 };
