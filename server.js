@@ -15,7 +15,7 @@ const transactionRouter = require("./routes/transactionRouter");
 const app = express();
 
 let corOptions = {
-  origin: ["https://ebook-react.vercel.app", "http://localhost:3000"],
+  origin: ["https://ebook-react.vercel.app"],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
