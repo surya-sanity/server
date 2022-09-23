@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { initCart } = require("./cartController");
 const { initWallet } = require("./walletController");
+const { Op } = require("sequelize");
 
 const User = db.users;
 
@@ -89,6 +90,58 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   res.status(200).json(req.user);
 });
 
+// @desc    Get All Users data
+// @route   GET /api/users/all
+// @access  Admin
+const getAllUsers = asyncHandler(async (req, res) => {
+  const allUsers = await User.findAll({
+    where: { id: { [Op.ne]: req.user.id } },
+  });
+
+  res.status(200).json(allUsers);
+});
+
+// @desc    Delete userById
+// @route   GET /api/users/deleteUser/:id
+// @access  Admin
+const deleteUserById = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+
+  const userExists = await User.findOne({ where: { id } });
+
+  if (!userExists) {
+    res.status(400);
+    throw new Error("User doesn't exist !");
+  }
+
+  await User.destroy({
+    where: { id: id },
+  })
+    .then(() => {
+      res.status(200).json({ message: "Deleted user !" });
+    })
+    .catch((err) => {
+      res.status(400);
+      throw new Error("Cannot delete that user ");
+    });
+});
+
+// @desc    Delete all Users data
+// @route   GET /api/users/deleteAll
+// @access  Admin
+const deleteAllUsers = asyncHandler(async (req, res) => {
+  await User.destroy({
+    where: { id: { [Op.ne]: req.user.id } },
+  })
+    .then(() => {
+      res.status(200).json({ message: "Deleted all users !" });
+    })
+    .catch((err) => {
+      res.status(400);
+      throw new Error("Cannot delete all users ");
+    });
+});
+
 // Generate JWT
 const generateToken = (email) => {
   return jwt.sign({ email }, process.env.JWT_SECRET, {
@@ -100,4 +153,7 @@ module.exports = {
   registerUser,
   loginUser,
   getCurrentUser,
+  getAllUsers,
+  deleteAllUsers,
+  deleteUserById,
 };
