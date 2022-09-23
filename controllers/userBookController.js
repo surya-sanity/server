@@ -78,7 +78,7 @@ const getAllUserBooks = asyncHandler(async (req, res) => {
 });
 
 // @desc    Delete userBook for currentUser by id
-// @route   DELETE /api/userBook/:id
+// @route   DELETE /api/userBook/deleteOne/:id
 // @access  users
 const deleteUserBookById = asyncHandler(async (req, res) => {
   const id = req.params.id;
@@ -88,7 +88,32 @@ const deleteUserBookById = asyncHandler(async (req, res) => {
     throw new Error("bookId cannot be empty !");
   }
 
-  await UserBook.destroy({ where: { userId: req.user.id, id: id } });
+  const bookExists = await UserBook.findOne({ where: { id: id } });
+
+  if (!bookExists) {
+    res.status(400);
+    throw new Error("Book not found");
+  }
+
+  await UserBook.destroy({ where: { id: id } });
+
+  res.status(200).send({ message: "Deleted Successfully !" });
+});
+
+// @desc    Get userBooks for Admin
+// @route   GET /api/userBook/admin/all
+// @access  Admin
+const getAllUserBooksAdmin = asyncHandler(async (req, res) => {
+  const userBooks = await UserBook.findAll();
+
+  res.status(200).send(userBooks);
+});
+
+// @desc    Delete all user books by Admin
+// @route   DELETE /api/userBook/deleteAll
+// @access  Admin
+const deleteAllUserBooks = asyncHandler(async (req, res) => {
+  await UserBook.destroy({ where: {}, truncate: true });
 
   res.status(200).send({ message: "Deleted Successfully !" });
 });
@@ -97,4 +122,6 @@ module.exports = {
   addUserBook,
   getAllUserBooks,
   deleteUserBookById,
+  getAllUserBooksAdmin,
+  deleteAllUserBooks,
 };
